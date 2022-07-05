@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grpc-xds-client-config
+  namespace: example
+data:
+  xds_bootstrap.json: |
+    {
+      "xds_servers": [
+        {
+          "server_uri": "grpc-xds-grpc.example.svc.cluster.local:18000",
+          "channel_creds": [{"type": "insecure"}],
+          "server_features": ["xds_v3"]
+        }
+      ],
+      "node": {
+        "id": "b7f9c818-fb46-43ca-8662-d3bdbcf7ec18",
+        "metadata": {
+          "R_GCP_PROJECT_NUMBER": "123456789012"
+        }
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-xds-client
+  namespace: example
+  labels:
+    app.kubernetes.io/name: grpc-xds-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: grpc-xds-client
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: grpc-xds-client
+    spec:
+      containers:
+        - name: grpc-xds-client
+          image: localhost:5001/grpc-example
+          imagePullPolicy: Always
+          args: [ "xds-client", "-t", "xds:///grpc-server-grpc.example:50051", "-c", "100", "-d", "5m" ]
+          env:
+            - name: GRPC_XDS_BOOTSTRAP
+              value: /var/run/config/xds_bootstrap.json
+#            - name: GRPC_GO_LOG_VERBOSITY_LEVEL
+#              value: "99"
+#            - name: GRPC_GO_LOG_SEVERITY_LEVEL
+#              value: info
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          volumeMounts:
+            - mountPath: /var/run/config
+              name: client-config
+      volumes:
+        - name: client-config
+          configMap:
+            name: grpc-xds-client-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-xds-client
+  namespace: example
+  labels:
+    app.kubernetes.io/name: grpc-xds-client
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: grpc-xds-client
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: grpc-xds-client
+  namespace: example
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: grpc-xds-client
+  endpoints:
+    - port: http
+  namespaceSelector:
+    matchNames:
+      - example
