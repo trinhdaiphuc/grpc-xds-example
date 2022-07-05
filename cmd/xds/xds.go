@@ -7,8 +7,8 @@ import (
 	"github.com/envoyproxy/go-control-plane/pkg/server/v3"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	httpserver "grpc-loadbalancing/pkg/server"
-	"grpc-loadbalancing/pkg/xds"
+	httpserver "github.com/trinhdaiphuc/grpc-xds-example/pkg/server"
+	"github.com/trinhdaiphuc/grpc-xds-example/pkg/xds"
 	"k8s.io/client-go/kubernetes"
 	"time"
 )

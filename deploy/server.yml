@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: grpc-server
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app.kubernetes.io/name: grpc-server
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: grpc-server
-          image: localhost:5001/grpc-example
+          image: bigphuc/grpc-example
           imagePullPolicy: Always
           args: [ "server", "-a", ":50051" ]
           env:
