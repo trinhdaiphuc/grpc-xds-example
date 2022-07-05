@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"grpc-loadbalancing/cmd/client"
-	"grpc-loadbalancing/cmd/server"
-	"grpc-loadbalancing/cmd/xds"
-	"grpc-loadbalancing/cmd/xdsclient"
+	"github.com/trinhdaiphuc/grpc-xds-example/cmd/client"
+	"github.com/trinhdaiphuc/grpc-xds-example/cmd/server"
+	"github.com/trinhdaiphuc/grpc-xds-example/cmd/xds"
+	"github.com/trinhdaiphuc/grpc-xds-example/cmd/xdsclient"
 	"os"
 )
 

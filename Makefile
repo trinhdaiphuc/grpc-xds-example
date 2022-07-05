@@ -1,11 +1,11 @@
 docker-build-m1:
-	docker build --platform=linux/amd64 . -t localhost:5001/grpc-example
+	docker build --platform=linux/amd64 . -t bigphuc/grpc-example
 
 docker-build:
-	docker build . -t localhost:5001/grpc-example
+	docker build . -t bigphuc/grpc-example
 
 docker-push:
-	docker push localhost:5001/grpc-example:latest
+	docker push bigphuc/grpc-example
 
 build-linux:
-	GO111MODULE=on GOARCH="amd64" GOOS=linux go build -o grpc-example main.go
+	GO111MODULE=on GOARCH="amd64" GOOS=linux go build -o bin/grpc-example main.go

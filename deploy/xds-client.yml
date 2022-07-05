@@ -40,16 +40,12 @@ spec:
     spec:
       containers:
         - name: grpc-xds-client
-          image: localhost:5001/grpc-example
+          image: bigphuc/grpc-example
           imagePullPolicy: Always
           args: [ "xds-client", "-t", "xds:///grpc-server-grpc.example:50051", "-c", "100", "-d", "5m" ]
           env:
             - name: GRPC_XDS_BOOTSTRAP
               value: /var/run/config/xds_bootstrap.json
-#            - name: GRPC_GO_LOG_VERBOSITY_LEVEL
-#              value: "99"
-#            - name: GRPC_GO_LOG_SEVERITY_LEVEL
-#              value: info
           ports:
             - name: http
               containerPort: 8080
