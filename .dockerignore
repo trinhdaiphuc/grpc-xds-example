@@ -1,0 +1,5 @@
+.git/
+deploy/
+bin/
+Makefile
+README.md
