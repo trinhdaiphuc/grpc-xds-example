@@ -54,7 +54,6 @@ metadata:
   labels:
     app.kubernetes.io/name: grpc-server
 spec:
-#  clusterIP: None
   type: ClusterIP
   ports:
     - port: 50051

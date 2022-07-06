@@ -154,7 +154,7 @@ func createListener(targetHostPortNumber string, routeConfig *route.RouteConfigu
 	return lds
 }
 
-func GenerateSnapshot(k8sEndPoints map[string][]PodEndPoint, region, zone string) (cache.Snapshot, error) {
+func GenerateSnapshot(k8sEndPoints map[string][]PodEndPoint, region, zone string) (*cache.Snapshot, error) {
 	var eds, cds, rds, lds []types.Resource
 	for _, podEndPoints := range k8sEndPoints {
 		if len(podEndPoints) == 0 {
