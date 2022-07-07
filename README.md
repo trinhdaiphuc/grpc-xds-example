@@ -53,5 +53,5 @@ kubectl apply -f ./deploy/xds-client.yml
 
 ### Grafana dashboard
 
-Open grafana dashboard and import [this file](./deploy/grafana/dashboard.json) to load the dashboard from
+Open grafana dashboard and import [this file](./deploy/grafana/dashboard.json) to load the dashboard.
 
