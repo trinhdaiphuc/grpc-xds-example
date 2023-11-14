@@ -3,6 +3,8 @@ package xds
 import (
 	"context"
 	"flag"
+	"time"
+
 	"github.com/envoyproxy/go-control-plane/pkg/cache/v3"
 	"github.com/envoyproxy/go-control-plane/pkg/server/v3"
 	"github.com/sirupsen/logrus"
@@ -10,7 +12,6 @@ import (
 	httpserver "github.com/trinhdaiphuc/grpc-xds-example/pkg/server"
 	"github.com/trinhdaiphuc/grpc-xds-example/pkg/xds"
 	"k8s.io/client-go/kubernetes"
-	"time"
 )
 
 var (

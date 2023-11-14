@@ -3,25 +3,21 @@ package xdsclient
 import (
 	"log"
 	"strings"
+	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cobra"
 	"github.com/trinhdaiphuc/grpc-xds-example/pkg/client"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/keepalive"
 
 	_ "google.golang.org/grpc/xds" // To install the xds resolvers and balancers.
 )
 
 var (
-	concurrency       int
-	duration          string
-	target            string
-	grpcClientCounter = prometheus.NewCounter(prometheus.CounterOpts{
-		Name:        "grpc_xds_client_request_total",
-		Help:        "Number of total request.",
-		ConstLabels: prometheus.Labels{"version": "1"},
-	})
+	concurrency int
+	duration    string
+	target      string
 )
 
 func RegisterCommand(parent *cobra.Command) {
@@ -37,7 +33,6 @@ func RegisterCommand(parent *cobra.Command) {
 		"such as \"300ms\", \"-1.5h\" or \"2h45m\"."+
 		" Valid time units are \"ns\", \"us\" (or \"µs\"), \"ms\", \"s\", \"m\", \"h\".")
 	cmd.Flags().StringVarP(&target, "target", "t", "xds:///localhost:50051", "uri of the server")
-	prometheus.MustRegister(grpcClientCounter)
 	parent.AddCommand(cmd)
 }
 
@@ -46,21 +41,23 @@ func run(_ []string) {
 		log.Fatalf("-target must use a URI with scheme set to 'xds'")
 	}
 
-	creeds := insecure.NewCredentials()
-	//creds, err := xds.NewClientCredentials(xds.ClientOptions{
-	//	FallbackCreds: insecure.NewCredentials()
-	//})
 	// Make another ClientConn with xds policy.
 	xdsConn, err := grpc.Dial(
 		target,
-		grpc.WithTransportCredentials(creeds),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithKeepaliveParams(keepalive.ClientParameters{
+			Time:                30 * time.Second, // client ping server if no activity for this long
+			Timeout:             20 * time.Second,
+			PermitWithoutStream: true,
+		}),
+		grpc.WithDefaultCallOptions(grpc.WaitForReady(true)),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer xdsConn.Close()
 
-	go client.LoadTest(xdsConn, duration, concurrency, grpcClientCounter)
+	go client.LoadTest(xdsConn, duration, concurrency)
 
 	client.ServeHTTP()
 }

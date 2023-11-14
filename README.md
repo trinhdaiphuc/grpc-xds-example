@@ -2,7 +2,7 @@
 
 ## Kubernetes environment:
 
-- Kubernetes version v1.24.0 (Use [Kind](https://kind.sigs.k8s.io/) to create a local Kubernetes cluster)
+- Kubernetes version v1.24.0 (Use [Kind with private registry](https://kind.sigs.k8s.io/docs/user/private-registries/) to create a local Kubernetes cluster and local registry for push and pull image faster)
 - Monitoring
   operator: [Kube prometheus stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
 - Go version: go1.18.3
@@ -16,6 +16,23 @@ You can configure grpc client and grpc xds client by change the command line arg
 - --concurrency (-c): Number of concurrent requests to run the client service. Example: 100
 - --duration (-d): A duration to send requests to the server. Duration is a possibly signed sequence of decimal numbers.
   Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.). Ex:  `300ms`, `-1.5h` or `2h45m`.
+
+## Build
+
+- Build docker image
+```shell
+make docker-build
+```
+
+- Build docker image for mac m1
+```shell
+make docker-build-m1
+```
+
+- Push image to registry
+```shell
+make docker-push
+```
 
 ## Installation
 

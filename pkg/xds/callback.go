@@ -2,10 +2,13 @@ package xds
 
 import (
 	"context"
+	"sync"
+
+	core "github.com/envoyproxy/go-control-plane/envoy/config/core/v3"
 	discovery "github.com/envoyproxy/go-control-plane/envoy/service/discovery/v3"
+	"github.com/envoyproxy/go-control-plane/pkg/server/v3"
 	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
-	"sync"
 )
 
 // Callbacks for XD Server
@@ -18,6 +21,10 @@ type Callbacks struct {
 	mu             sync.Mutex
 }
 
+var (
+	_ server.Callbacks = (*Callbacks)(nil)
+)
+
 func (cb *Callbacks) OnStreamResponse(ctx context.Context, id int64, req *discovery.DiscoveryRequest, resp *discovery.DiscoveryResponse) {
 	logrus.Debug("OnStreamResponse", zap.Int64("id", id), zap.Any("Request", req), zap.Any("Response ", resp))
 	cb.Report()
@@ -28,8 +35,8 @@ func (cb *Callbacks) OnDeltaStreamOpen(ctx context.Context, id int64, typ string
 	return nil
 }
 
-func (cb *Callbacks) OnDeltaStreamClosed(id int64) {
-
+func (cb *Callbacks) OnDeltaStreamClosed(id int64, node *core.Node) {
+	logrus.Debug("OnDeltaStreamClosed", zap.Int64("id", id), zap.String("node", node.String()))
 }
 
 func (cb *Callbacks) OnStreamDeltaRequest(id int64, req *discovery.DeltaDiscoveryRequest) error {
@@ -55,8 +62,8 @@ func (cb *Callbacks) OnStreamOpen(ctx context.Context, id int64, typ string) err
 }
 
 // OnStreamClosed type
-func (cb *Callbacks) OnStreamClosed(id int64) {
-	logrus.Debug("OnStreamClosed", zap.Int64("id", id))
+func (cb *Callbacks) OnStreamClosed(id int64, node *core.Node) {
+	logrus.Debug("OnStreamClosed", zap.Int64("id", id), zap.String("node", node.String()))
 }
 
 // OnStreamRequest type

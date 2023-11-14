@@ -19,7 +19,7 @@ spec:
         - name: grpc-client
           image: bigphuc/grpc-example
           imagePullPolicy: Always
-          args: [ "client", "-t", "grpc-server-grpc:50051", "-c", "100", "-d", "5m" ]
+          args: [ "client", "-t", "dns:///grpc-server-grpc:50051", "-c", "100", "-d", "10m" ]
           ports:
             - name: http
               containerPort: 8080

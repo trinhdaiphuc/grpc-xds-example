@@ -45,6 +45,7 @@ spec:
               port: metric
             initialDelaySeconds: 5
             timeoutSeconds: 1
+  minReadySeconds: 30
 ---
 apiVersion: v1
 kind: Service
@@ -54,7 +55,7 @@ metadata:
   labels:
     app.kubernetes.io/name: grpc-server
 spec:
-  type: ClusterIP
+  clusterIP: None
   ports:
     - port: 50051
       targetPort: grpc

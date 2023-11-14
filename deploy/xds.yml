@@ -47,7 +47,7 @@ spec:
       serviceAccountName: xds-server-user
       containers:
         - name: grpc-xds
-          image: bigphuc/grpc-example
+          image: localhost:5001/grpc-example
           imagePullPolicy: Always
           args: [ "xds", "-i", "b7f9c818-fb46-43ca-8662-d3bdbcf7ec18",
                   "-d", "true", "-n", "example", "-s", "grpc-server-grpc" ]

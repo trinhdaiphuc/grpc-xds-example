@@ -1,9 +1,7 @@
-FROM golang:1.18.0-alpine AS builder
+FROM golang:1.20-alpine AS builder
 
 ENV GO111MODULE=on \
-    CGO_ENABLED=1  \
-    GOARCH="amd64" \
-    GOOS=linux
+    CGO_ENABLED=1
 
 RUN apk update && apk add make git pkgconfig gcc g++ bash
 
@@ -16,7 +14,7 @@ COPY . .
 
 RUN go build -tags musl --ldflags "-extldflags -static" -o grpc-example main.go
 
-FROM alpine:3.15.4
+FROM alpine:3.18.4
 
 WORKDIR /home
 

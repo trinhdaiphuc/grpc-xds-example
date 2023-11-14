@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
         - name: grpc-xds-client
-          image: bigphuc/grpc-example
+          image: localhost:5001/grpc-example
           imagePullPolicy: Always
           args: [ "xds-client", "-t", "xds:///grpc-server-grpc.example:50051", "-c", "100", "-d", "5m" ]
           env:

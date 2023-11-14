@@ -1,17 +1,21 @@
 package server
 
 import (
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/spf13/cobra"
-	"github.com/trinhdaiphuc/grpc-xds-example/pkg/server"
-	"google.golang.org/grpc"
-	pb "google.golang.org/grpc/examples/features/proto/echo"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
+
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	pb "google.golang.org/grpc/examples/features/proto/echo"
+	"google.golang.org/grpc/keepalive"
+
+	"github.com/trinhdaiphuc/grpc-xds-example/pkg/server"
 )
 
 var address string
@@ -42,6 +46,10 @@ func run(_ []string) {
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			grpc_prometheus.StreamServerInterceptor,
 		)),
+		grpc.KeepaliveParams(keepalive.ServerParameters{
+			MaxConnectionAge:      10 * time.Second,
+			MaxConnectionAgeGrace: 10 * time.Second,
+		}),
 	)
 
 	// Echo server
