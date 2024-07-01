@@ -14,7 +14,7 @@ COPY . .
 
 RUN go build -tags musl --ldflags "-extldflags -static" -o grpc-example main.go
 
-FROM alpine:3.18.6
+FROM alpine:3
 
 WORKDIR /home
 
